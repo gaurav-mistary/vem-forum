@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Question - {{ ques.pk }}{% endblock %}
+
+{% block breadcrumb %}
+	<li class="breadcrumb-item"><a href="{% url 'forum-home_view' %}">Topics</a></li>
+	<li class="breadcrumb-item"><a href="{% url 'forum-topic_ques' ques.topic.pk %}">{{ ques.topic.name }}</a></li>
+		<li class="breadcrumb-item active">Question - {{ ques.pk }}</li>
+{% endblock %}
+
+{% block content %}
+
+	<div class="mb-4">
+		<a href="{% url 'forum-question_reply' ques.topic.pk ques.pk %}" class="btn btn-primary" role="button">Answer</a>
+	</div>
+
+	<div class="card mb-4 border-dark">
+		<div class="card-header text-white bg-dark py-2 px-3">
+			{{ ques.question }}
+		</div>
+	</div>
+
+	{% for ans in ques.ans.all %}
+		<div class="card mb-3">
+			<div class="card-body p-3">
+				<div class="row">
+					<div class="col-2">
+						<img src="{% static 'img/user.svg' %}" alt="{{ ans.a_writer.username }}" class="w-100">
+						<small>Answers: {{ ans.a_writer.ans.count }}</small><br>
+						<small>Likes : {{ ans.likes.count }}</small>
+					</div>
+					<div class="col-10">
+						<div class="row mb-3">
+							<div class="col-6">
+								<strong class="text-muted">{{ ans.a_writer.username }}</strong>
+							</div>
+							<div class="col-6 text-right">
+								<small class="text-muted">{{ ans.created_at }}</small>
+							</div>
+						</div>
+						{{ ans.get_ans_as_markdown }}
+						{% if ans.a_writer == user %}
+							<div class="mt-3">
+								<a href="{% url 'edit_post' ans.a_question.topic.pk ans.a_question.pk ans.pk %}" class="btn btn-primary btn-sm" role="button">Edit</a>
+							</div>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+		</div>
+	{% endfor %}
+
+	{% include 'includes/pagination.html' %}
+
+{% endblock %}

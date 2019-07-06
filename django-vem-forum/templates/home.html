@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block breadcrumb %}
+  <li class="breadcrumb-item active">Topics</li>
+{% endblock %}
+
+{% block content %}
+  <table class="table">
+	<thead class="thead-inverse thead-dark">
+	  <tr>
+		<th>Topics</th>
+		<th>Questions</th>
+		<th>Last Updated</th>
+	  </tr>
+	</thead>
+	<tbody>
+	  {% for topic in topics %}
+		<tr>
+		  <td>
+			<a href="{% url 'forum-topic_ques' topic.pk %}">{{ topic.name }}</a>
+			<small class="text-muted d-block">{{ topic.details }}</small>
+		  </td>
+		  <td class="align-middle">
+		  	{{ topic.quest.count }}
+		  </td>
+		  <td class="align-middle">
+		  	{% with ans=topic.last_updated_info %}
+		  	{% if ans %}
+		  		<small>
+		  				By {{ ans.a_writer.username }} at {{ ans.created_at }}
+		  		</small>
+		  	{% else %}
+		  		<small class="text-muted">
+		  			<em>No Answers Yet</em>
+		  		</small>
+		  	{% endif %}
+		  	{% endwith %}
+		  </td>
+		</tr>
+	  {% endfor %}
+	</tbody>
+  </table>
+{% endblock %}

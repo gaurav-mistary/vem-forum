@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Post a reply{% endblock title %}
+
+
+{% block breadcrumb %}
+	<li class="breadcrumb-item"><a href="{% url 'forum-home_view' %}">Forum</a></li>
+	<li class="breadcrumb-item"><a href="{% url 'forum-topic_ques' ques.topic.pk %}">{{ ques.topic.name }}</a></li>
+	<li class="breadcrumb-item active"><a href="{% url 'forum-question_answers' ques.topic.pk ques.pk %}"> Question - {{ ques.pk }}</a></li>
+	<li class="breadcrumb-item active">Answer</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+
+	<form method="post" class="mb-4">
+		{% csrf_token %}
+		{% include 'includes/form.html' %}
+		<button type="submit" class="btn btn-success">Answer</button>
+	</form>
+
+	{% for answe in ques.get_last_ten_ans %}
+		<div class="card mb-2">
+			<div class="card-body p-3">
+				<div class="row mb-3">
+					<div class="col-6">
+						<strong class="text-muted">{{ answe.a_writer.username }}</strong>
+					</div>
+					<div class="col-6 text-right">
+						<small class="text-muted">{{ answe.created_at }}</small>
+					</div>
+				</div>
+				{{ answe.get_ans_as_markdown }}
+			</div>
+		</div>
+	{% endfor %}
+
+{% endblock %}

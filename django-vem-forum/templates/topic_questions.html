@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  {{ topic.name }}  {{ block.super }}
+{% endblock title %}
+{% load humanize %}
+
+{% block breadcrumb %}
+  <li class="breadcrumb-item"><a href="{% url 'forum-home_view' %}">Topic</a></li>
+  <li class="breadcrumb-item active">{{ topic.name }}</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+ <div class="mb-4">
+	<a href="{% url 'forum-new_ques' topic.pk %}" class="btn btn-primary">Ask Question</a>
+  </div>
+  <table class="table">
+	<thead class="thead-inverse thead-dark">
+	  <tr>
+		<th>Question</th>
+		<th>Writer</th>
+		<th>Answers</th>
+		<th>Last Update</th>
+	  </tr>
+	</thead>
+	<tbody>
+	  {% for top in ques %}
+		<tr>
+		  <td><a href="{% url 'forum-question_answers' topic.pk top.pk %}">{{ top.question }}</a></td>
+		  <td>{{ top.writer.username }}</td>
+		  <td>{{ top.replies }}</td>
+		  <td>{{ top.last_updated|naturaltime }}</td>
+		</tr>
+	  {% endfor %}
+	</tbody>
+  </table>
+  {% if ques.has_other_pages %}
+  <nav aria-label="Topics pagination" class="mb-4">
+	<ul class="pagination">
+	  {% if ques.has_previous %}
+		<li class="page-item">
+		  <a class="page-link" href="?page={{ ques.previous_page_number }}">Previous</a>
+		</li>
+	  {% else %}
+		<li class="page-item disabled">
+		  <span class="page-link">Previous</span>
+		</li>
+	  {% endif %}
+
+	  {% for page_num in ques.paginator.page_range %}
+		{% if ques.number == page_num %}
+		  <li class="page-item active">
+			<span class="page-link">
+			  {{ page_num }}
+			  <span class="sr-only">(current)</span>
+			</span>
+		  </li>
+		{% else %}
+		  <li class="page-item">
+			<a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+		  </li>
+		{% endif %}
+	  {% endfor %}
+
+	  {% if ques.has_next %}
+		<li class="page-item">
+		  <a class="page-link" href="?page={{ ques.next_page_number }}">Next</a>
+		</li>
+	  {% else %}
+		<li class="page-item disabled">
+		  <span class="page-link">Next</span>
+		</li>
+	  {% endif %}
+	</ul>
+  </nav>
+{% endif %}
+{% endblock content %}

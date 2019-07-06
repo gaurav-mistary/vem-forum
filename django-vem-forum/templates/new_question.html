@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% block title %} Question - New {% endblock title %}
+{% block breadcrumb %}
+  <li class="breadcrumb-item"><a href="{% url 'forum-home_view' %}">Topics</a></li>
+  <li class="breadcrumb-item"><a href="{% url 'forum-topic_ques' topic.pk %}">{{ topic.name }}</a></li>
+  <li class="breadcrumb-item active">New topic</li>
+{% endblock %}
+
+{% block content %}
+
+  <form method="post">
+	{% csrf_token %}
+	{% include 'includes/form.html' %}
+	<button type="submit" class="btn btn-success">Ask</button>
+  </form>
+
+{% endblock %}
